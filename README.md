@@ -1,6 +1,8 @@
 # C-Slang ~  
 C-Slang is a **minimalist, Lua-C hybrid programming language** created for fun and experimentation. It combines the simplicity of Lua with the structure of C, designed to feel familiar yet quirky.
 
+![C-Slang Logo](icon.png)
+
 > ⚠️ This is a toy language. It’s not production-ready, but it’s a cool little project to mess around with.
 
 ---
