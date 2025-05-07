@@ -119,7 +119,6 @@ class CSlangTranspiler:
                
                # Check if it's an assignment operator
                if operator_type == "OPERATOR" and operator_value in ("=", "+=", "-=", "*=", "/=", "%="):
-                   print("operator detected")
                    return self.parse_assignment(operator_value)  # Pass actual operator string
            
            return self.parse_function_call_or_variable()  # Handle function call or variable reference
