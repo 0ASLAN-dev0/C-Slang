@@ -1,0 +1,85 @@
+Program             = { Statement } ;
+
+Statement           = FunctionDeclaration
+                    | VariableDeclaration
+                    | Assignment
+                    | PrintStatement
+                    | IfStatement
+                    | WhileStatement
+                    | ForStatement
+                    | ReadStatement
+                    | ReturnStatement
+                    | BreakStatement
+                    | ContinueStatement
+                    | FunctionCall ";" 
+                    | Comment ;
+
+FunctionDeclaration = "func" Identifier "(" [ ParameterList ] ")" Block ;
+
+ParameterList       = Parameter { "," Parameter } ;
+Parameter           = Type Identifier ;
+
+Block               = "{" { Statement } "}" ;
+
+VariableDeclaration = Type Identifier [ "=" Expression ] ";" ;
+Assignment          = Identifier "=" Expression ";" ;
+
+Type                = "int" | "float" | "bool" | "char" | "string" ;
+
+Expression          = OrExpression ;
+
+OrExpression        = AndExpression { "||" AndExpression } ;
+AndExpression       = EqualityExpression { "&&" EqualityExpression } ;
+EqualityExpression  = RelationalExpression { ("==" | "!=") RelationalExpression } ;
+RelationalExpression= AdditiveExpression { ("<" | ">" | "<=" | ">=") AdditiveExpression } ;
+AdditiveExpression  = MultiplicativeExpression { ("+" | "-") MultiplicativeExpression } ;
+MultiplicativeExpression = UnaryExpression { ("*" | "/" | "%") UnaryExpression } ;
+UnaryExpression     = [ "-" | "!" ] PrimaryExpression ;
+PrimaryExpression   = Literal
+                    | Identifier
+                    | FunctionCall
+                    | "(" Expression ")" ;
+
+Literal             = IntegerLiteral
+                    | FloatLiteral
+                    | StringLiteral
+                    | BoolLiteral ;
+
+IntegerLiteral      = Digit { Digit } ;
+FloatLiteral        = Digit { Digit } "." Digit { Digit } ;
+StringLiteral       = "\"" { Character } "\"" ;
+BoolLiteral         = "true" | "false" ;
+
+FunctionCall        = Identifier "(" [ ArgumentList ] ")" ;
+ArgumentList        = Expression { "," Expression } ;
+
+PrintStatement      = "print" "(" [ ArgumentList ] ")" ";" ;
+
+IfStatement         = "if" "(" Expression ")" Block
+                    { "elif" "(" Expression ")" Block }
+                    [ "else" Block ] ;
+
+WhileStatement      = "while" "(" Expression ")" Block ;
+
+ForStatement        = "for" "(" (VariableDeclaration | Assignment) 
+                      Expression ";" Expression ")" "do" Block ;
+
+ReadStatement       = "read" "(" StringLiteral "," Identifier ")" ";" ;
+
+ReturnStatement     = "return" [ Expression ] ";" ;
+BreakStatement      = "break" ";" ;
+ContinueStatement   = "continue" ";" ;
+
+Identifier          = Letter { Letter | Digit | "_" } ;
+
+Letter              = "a" .. "z" | "A" .. "Z" | "_" ;
+Digit               = "0" .. "9" ;
+
+Character           = Letter | Digit
+                    | " " | "+" | "-" | "." | "," | ";" | "(" | ")"
+                    | "{" | "}" | "[" | "]" | "=" | ">" | "<"
+                    | "|" | "&" | "!" | "%" | "^" | "*" | "/" | "_" ;
+
+Comment             = SingleLineComment | MultiLineComment ;
+SingleLineComment   = "#" { Character }* ;
+MultiLineComment    = "##" { Character }* "##" ;
