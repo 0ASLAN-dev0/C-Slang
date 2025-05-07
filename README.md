@@ -67,6 +67,12 @@ If you're into building languages, parsers, or compilers, feel free to fork and 
 
 ---
 
+## EBNF File
+
+You can check out the ebnf file [here.](grammar.ebnf)
+
+---
+
 ## 📜 License
 
 [MIT](LICENSE) — do whatever you want (with credits of course).
