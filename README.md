@@ -40,7 +40,7 @@ I wrote a **basic transpiler** that converts `.csl` files into C code.
 3. **Transpile a `.csl` file:**
 
    ```bash
-   transpilercsl path/to/your_file.csl
+   transpilecsl path/to/your_file.csl
    ```
 
 This will output a `.c` file in the same directory.
