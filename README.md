@@ -69,7 +69,7 @@ If you're into building languages, parsers, or compilers, feel free to fork and 
 
 ## EBNF File
 
-You can check out the ebnf file [here.](grammar.ebnf)
+You can check out the EBNF file [here.](grammar.ebnf)
 
 ---
 
