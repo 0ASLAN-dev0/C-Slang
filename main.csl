@@ -1,0 +1,47 @@
+## 
+  Main test for
+  C-Slang transpiler
+##
+
+func add(int a, int b) {
+    int result = a + b;
+    print("Sum: ", result, "\n");
+    return result;
+};
+
+func main() {
+    int x = 5;
+    int y = 10;
+    float z = 3.5;
+    print("Initial values -> x: ", x, ", y: ", y, ", z: ", z, "\n");
+
+    int sum = add(x, y);
+
+    if (x < y) {
+        print("x is less than y\n");
+    } elif (x == y) {
+        print("x is equal to y\n");
+    } else {
+        print("x is greater than y\n");
+    };
+
+    int counter = 0;
+    while (counter < 3) {
+        print("While loop count: ", counter, "\n");
+        counter = counter + 1;
+    };
+
+    for (int i = 0; i < 3; i = i + 1) do {
+        if (i == 1) {
+            continue;
+        };
+        print("For loop index: ", i, "\n");
+        if (i == 2) {
+            break;
+        };
+    };
+
+    int input;
+    read("Enter a number: ", input);
+    print("You entered: ", input, "\n");
+};
