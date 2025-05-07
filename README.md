@@ -27,7 +27,7 @@ I wrote a **basic transpiler** that converts `.csl` files into C code.
    ```bash
    git clone https://github.com/0ASLAN-dev0/C-Slang.git
    cd C-Slang
-````
+   ```
 
 2. **Install the transpiler:**
 
