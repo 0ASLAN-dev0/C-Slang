@@ -65,7 +65,6 @@ class CSlangTranspiler:
         return self.previous()
 
     def peek(self, offset=1):
-        # Correctly call self.current() to get the current token and then lookahead by 'offset'
         lookahead_index = self.i + offset
         if lookahead_index < len(self.tokens):
             return self.tokens[lookahead_index]
@@ -111,17 +110,15 @@ class CSlangTranspiler:
         elif token_type == "KEYWORD" and token_value == "func":
             self.parse_function_definition()
         elif token_type == "IDENTIFIER":
-           # Look ahead to see if it's an assignment-like operator
            operator = self.peek(1)
            
            if operator:
-               operator_type, operator_value = operator  # Unpack token (type, value)
+               operator_type, operator_value = operator
                
-               # Check if it's an assignment operator
                if operator_type == "OPERATOR" and operator_value in ("=", "+=", "-=", "*=", "/=", "%="):
-                   return self.parse_assignment(operator_value)  # Pass actual operator string
+                   return self.parse_assignment(operator_value)
            
-           return self.parse_function_call_or_variable()  # Handle function call or variable reference
+           return self.parse_function_call_or_variable()
 
 
         elif token_type == "KEYWORD" and token_value in ("if", "elif", "else"):
@@ -173,7 +170,7 @@ class CSlangTranspiler:
                 format_parts.append(token_value[1:-1].replace("%", "%%").replace('"', '\\"'))
                 self.advance()
             elif token_type == "IDENTIFIER":
-                var_type = self.variables.get(token_value, "int")  # Default to int if type not found
+                var_type = self.variables.get(token_value, "int") 
                 fmt = self.format_specifier(var_type)
                 format_parts.append(fmt)
                 values.append(token_value)
@@ -202,7 +199,7 @@ class CSlangTranspiler:
        self.match("RPAREN")
        self.match("SEMICOLON")
 
-       var_type = self.variables.get(var_name, "int")  # Default to int if type not found
+       var_type = self.variables.get(var_name, "int")
        scanf_specifier = self.scanf_specifier(var_type)
 
        self.output.append(f'{self.indent()}printf({prompt});')
@@ -214,11 +211,11 @@ class CSlangTranspiler:
        elif var_type == "float":
            return "%f"
        elif var_type == "bool":
-           return "%d"  # For booleans, we use %d
+           return "%d"
        elif var_type == "int":
            return "%d"
        else:
-           return "%s"  # Default to string if unknown type
+           return "%s"
 
 
     def format_specifier(self, var_type):
@@ -227,11 +224,11 @@ class CSlangTranspiler:
         elif var_type == "float":
             return "%f"
         elif var_type == "bool":
-            return "%d"  # For booleans, we use %d (1 for true, 0 for false)
+            return "%d"
         elif var_type == "int":
             return "%d"
         else:
-            return "%s"  # Default to string if unknown type
+            return "%s"e
 
     def parse_function_definition(self):
         self.match("KEYWORD", "func")
@@ -240,7 +237,7 @@ class CSlangTranspiler:
 
         params = []
         while not self.check("RPAREN"):
-            param_type = self.match("KEYWORD")  # e.g., int, float
+            param_type = self.match("KEYWORD")
             param_name = self.match("IDENTIFIER")
             params.append(f"{param_type} {param_name}")
             if not self.check("RPAREN"):
@@ -248,7 +245,7 @@ class CSlangTranspiler:
         self.match("RPAREN")
         self.match("LBRACE")
 
-        self.functions[func_name] = params  # Store full param strings with type
+        self.functions[func_name] = params
         self.output.append(f"int {func_name}({', '.join(params)}) {{")
         self.indentation_level += 1
 
@@ -266,12 +263,10 @@ class CSlangTranspiler:
     def parse_function_call_or_variable(self):
         identifier = self.match("IDENTIFIER")
 
-        # Check if the identifier is followed by an opening parenthesis (function call)
         if self.check("LPAREN"):
             self.match("LPAREN")
             args = []
 
-            # Parse function arguments
             while not self.check("RPAREN"):
                 arg = self.parse_expression(stop_tokens={"COMMA", "RPAREN"})
                 args.append(arg)
@@ -281,7 +276,6 @@ class CSlangTranspiler:
             self.match("RPAREN")
             return f"{identifier}({', '.join(args)})"
         else:
-            # It's just a variable or an expression involving a variable
             return identifier
 
     def parse_conditional(self):
@@ -372,17 +366,14 @@ class CSlangTranspiler:
 
 
     def parse_assignment(self, operator):
-        # Handle all types of assignment operators
         if operator == "=":
-            # Handle basic assignment (e.g., a = 5)
             left = self.match("IDENTIFIER")
-            self.match("OPERATOR")  # '=' token
-            right = self.parse_expression()  # Parse the expression on the right
-            self.output.append(f"{self.indent()}{left} = {right};")  # Transpile assignment
+            self.match("OPERATOR") 
+            right = self.parse_expression()
+            self.output.append(f"{self.indent()}{left} = {right};")
         elif operator == "+=":
-            # Handle compound assignment (e.g., a += 1)
             left = self.match("IDENTIFIER")
-            self.match("OPERATOR")  # Check for the correct assignment operator token
+            self.match("OPERATOR")
             right = self.parse_expression()
             self.output.append(f"{self.indent()}{left} += {right};")
         elif operator == "-=":
@@ -406,7 +397,6 @@ class CSlangTranspiler:
             right = self.parse_expression()
             self.output.append(f"{self.indent()}{left} %= {right};")
         else:
-            # Raise an error for unsupported assignment operators
             raise Exception(f"Unsupported assignment operator: {operator}")
 
 
@@ -472,25 +462,20 @@ class CSlangTranspiler:
 
 def transpile_cslang(file_path):
     """ Function to transpile the C-Slang file to C code """
-    # Check if the file exists
     if not os.path.exists(file_path):
         print(f"Error: The file {file_path} does not exist.")
         return
 
-    # Read the contents of the C-Slang file
     with open(file_path, 'r') as file:
         cslang_code = file.read()
 
-    # Tokenize the C-Slang code
     tokens = Tokenizer(cslang_code).tokenize()
 
-    # Transpile to C code
     transpiled_code = CSlangTranspiler(tokens).parse()
 
 
     # print(transpiled_code)
 
-    # Save the transpiled C code to a new .c file in the same directory
     output_file_path = os.path.splitext(file_path)[0] + ".c"
     with open(output_file_path, 'w') as output_file:
         output_file.write(transpiled_code)
@@ -498,17 +483,15 @@ def transpile_cslang(file_path):
     print(f"Transpiled C code has been saved to: {output_file_path}")
 
 def main():
-    # Check if the script is called with the file path as an argument
+
     if len(sys.argv) != 2:
         print("Usage: transpilecsl <path-to-csl-file>")
         sys.exit(1)
 
-    # Get the file path from the command line argument
     file_path = sys.argv[1]
 
     transpile_cslang(file_path)
 
-    # Optionally, check if ESC key is pressed to break the loop
     if keyboard.is_pressed('esc'):
         print("Exiting...")
 
